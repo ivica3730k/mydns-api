@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `mydns` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `mydns`;
 -- MySQL dump 10.13  Distrib 5.7.29, for linux-glibc2.12 (x86_64)
 --
 -- Host: docker.ivica.codes    Database: mydns
@@ -16,13 +18,23 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `apikeys`
+-- Table structure for table `apikeys`
 --
 
-LOCK TABLES `apikeys` WRITE;
-/*!40000 ALTER TABLE `apikeys` DISABLE KEYS */;
-/*!40000 ALTER TABLE `apikeys` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `apikeys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apikeys` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `userId` bigint(20) DEFAULT NULL,
+  `apikey` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `apikey_UNIQUE` (`apikey`),
+  KEY `fk_key_to_user_idx` (`userId`),
+  CONSTRAINT `fk_key_to_user` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -69,4 +81,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-17  1:06:23
+-- Dump completed on 2020-03-18  4:35:17

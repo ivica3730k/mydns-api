@@ -18,6 +18,132 @@ USE `mydns`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `apikeys`
+--
+
+DROP TABLE IF EXISTS `apikeys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apikeys` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `userId` bigint(20) DEFAULT NULL,
+  `apikey` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `apikey_UNIQUE` (`apikey`),
+  KEY `fk_key_to_user_idx` (`userId`),
+  CONSTRAINT `fk_key_to_user` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`dnsadmin`@`%`*/ /*!50003 TRIGGER update_api_count AFTER INSERT ON mydns.apikeys
+FOR EACH ROW
+UPDATE users SET apikeys = apikeys+1 WHERE id = NEW.userId */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`dnsadmin`@`%`*/ /*!50003 TRIGGER update_api_count_minus AFTER DELETE ON mydns.apikeys
+FOR EACH ROW 
+BEGIN
+	UPDATE mydns.users SET apikeys = apikeys -1 WHERE id = OLD.userId;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `rr`
+--
+
+DROP TABLE IF EXISTS `rr`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rr` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `zone` int(10) unsigned NOT NULL,
+  `name` char(64) NOT NULL,
+  `type` enum('A','AAAA','CNAME','HINFO','MX','NAPTR','NS','PTR','RP','SRV','TXT') DEFAULT NULL,
+  `data` char(128) NOT NULL,
+  `aux` int(10) unsigned NOT NULL DEFAULT '0',
+  `ttl` int(10) unsigned NOT NULL DEFAULT '86400',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `rr` (`zone`,`name`,`type`,`data`),
+  CONSTRAINT `FK_soa` FOREIGN KEY (`zone`) REFERENCES `soa` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `soa`
+--
+
+DROP TABLE IF EXISTS `soa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `soa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `origin` char(255) NOT NULL,
+  `ns` char(255) NOT NULL DEFAULT 'localhost',
+  `mbox` char(255) NOT NULL,
+  `serial` int(10) unsigned NOT NULL DEFAULT '1',
+  `refresh` int(10) unsigned NOT NULL DEFAULT '28800',
+  `retry` int(10) unsigned NOT NULL DEFAULT '7200',
+  `expire` int(10) unsigned NOT NULL DEFAULT '604800',
+  `minimum` int(10) unsigned NOT NULL DEFAULT '86400',
+  `ttl` int(10) unsigned NOT NULL DEFAULT '86400',
+  `owner` bigint(20) NOT NULL,
+  `ddns` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `origin` (`origin`),
+  KEY `FK_soa_to_user` (`owner`),
+  CONSTRAINT `FK_soa_to_user` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `firstName` varchar(100) DEFAULT NULL,
+  `lastName` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `numOfSOA` bigint(20) DEFAULT '0',
+  `numOfRR` bigint(20) DEFAULT '0',
+  `apikeys` bigint(20) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username_UNIQUE` (`username`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping events for database 'mydns'
 --
 
@@ -292,4 +418,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-18  4:35:29
+-- Dump completed on 2020-03-18  4:36:23

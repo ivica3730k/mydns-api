@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `mydns` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `mydns`;
 -- MySQL dump 10.13  Distrib 5.7.29, for linux-glibc2.12 (x86_64)
 --
 -- Host: docker.ivica.codes    Database: mydns
@@ -16,13 +18,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `soa`
+-- Table structure for table `soa`
 --
 
-LOCK TABLES `soa` WRITE;
-/*!40000 ALTER TABLE `soa` DISABLE KEYS */;
-/*!40000 ALTER TABLE `soa` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `soa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `soa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `origin` char(255) NOT NULL,
+  `ns` char(255) NOT NULL DEFAULT 'localhost',
+  `mbox` char(255) NOT NULL,
+  `serial` int(10) unsigned NOT NULL DEFAULT '1',
+  `refresh` int(10) unsigned NOT NULL DEFAULT '28800',
+  `retry` int(10) unsigned NOT NULL DEFAULT '7200',
+  `expire` int(10) unsigned NOT NULL DEFAULT '604800',
+  `minimum` int(10) unsigned NOT NULL DEFAULT '86400',
+  `ttl` int(10) unsigned NOT NULL DEFAULT '86400',
+  `owner` bigint(20) NOT NULL,
+  `ddns` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `origin` (`origin`),
+  KEY `FK_soa_to_user` (`owner`),
+  CONSTRAINT `FK_soa_to_user` FOREIGN KEY (`owner`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -33,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-03-17  1:06:19
+-- Dump completed on 2020-03-18  4:35:14
