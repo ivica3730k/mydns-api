@@ -462,3 +462,5 @@ composer.lock
 *.css.map
 *.sass.map
 *.scss.map
+
+credidentials/
