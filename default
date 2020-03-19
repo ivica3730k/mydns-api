@@ -5,7 +5,7 @@ server {
   listen 80 default_server;
   listen [::]:80 default_server;
   server_name localhost;
-  root /path/to/folder/containing/php/scripts;
+  root /apiserver;
   index index.php;
   
   location / {

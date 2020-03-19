@@ -1,10 +1,12 @@
 <?php
 
 function connectToDatabase(){
-    $host = "docker.ivica.codes";
-    $username = "dnsadmin";
-    $password = "dnsadmin";
-    $db = "mydns";
+    require_once "credidentials.php";
+    $host = dbHostName();
+    $username = dbUserName();
+    $password = dbPassword();
+    $db = dbBase();
+
     $conn = new mysqli($host, $username, $password, $db);
     // Check connection
     if ($conn->connect_errno) {

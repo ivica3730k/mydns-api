@@ -1,4 +1,5 @@
 <?php
+
 require "dbconnection.php";
 
 function addSoa($_apikey, $_origin, $_optimiseForDdns)
