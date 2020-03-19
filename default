@@ -1,0 +1,21 @@
+# this nginx configuration assumes you are using php 7.3 installed 
+# in a default location on a linux operating system
+
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  server_name localhost;
+  root /apiserver;
+  index index.php;
+  
+  location / {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+    if (!-e $request_filename) {
+      rewrite ^(.+)$ /index.php break;
+    }
+  }
+  location ~ /\.ht {
+    deny all;
+  }
+}
