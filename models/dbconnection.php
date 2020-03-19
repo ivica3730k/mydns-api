@@ -1,7 +1,7 @@
 <?php
 
 function connectToDatabase(){
-    require_once "credidentials.php";
+    require_once(__DIR__ . "/../credidentials/credidentials.php");
     $host = dbHostName();
     $username = dbUserName();
     $password = dbPassword();
