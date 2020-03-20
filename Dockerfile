@@ -8,6 +8,7 @@ RUN add-apt-repository ppa:ondrej/php
 RUN apt-get update 
 RUN apt-get install -y nginx 
 RUN apt install -y php7.3 php7.3-fpm
+RUN apt-get install -y php7.3-mysqli
 	
 RUN mkdir apiserver
 RUN mkdir apiserver/models
