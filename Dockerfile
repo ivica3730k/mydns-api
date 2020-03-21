@@ -1,4 +1,5 @@
 FROM ubuntu
+MAINTAINER ivica-matic@outlook.com
 
 ENV DEBIAN_FRONTEND=noninteractive
 
