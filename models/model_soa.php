@@ -9,6 +9,10 @@ function addSoa($_apikey, $_zone, $_optimiseForDdns)
     $apikey = $conn->real_escape_string($_apikey);
     $zone = $conn->real_escape_string($_zone);
     $optimiseForDdns = $conn->real_escape_string($_optimiseForDdns);
+    if(strlen($apikey) > 64) {
+        return ["INVUSER"];
+        closeDatabase($conn);
+    }
     $sql = "CALL addSoa('$apikey','$zone','$optimiseForDdns')";
     $result = $conn->query($sql);
     closeDatabase($conn);

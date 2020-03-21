@@ -2,10 +2,12 @@
 
 
 require_once(__DIR__ . "/../models/model_soa.php");
+require_once(__DIR__ . "/../helpers/stringHelpers.php");
 require_once("errorMessages.php");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $apikey = $_POST["apikey"];
     $zone = $_POST["zone"];
+    $zone = validateDomainName($zone);
     $optimiseForDdns = $_POST["ddns"];
     if (isset($optimiseForDdns)) {
         if ($optimiseForDdns . strtolower($optimiseForDdns) == "true" or $optimiseForDdns == "1") {
@@ -18,8 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!isset($apikey) or !isset($zone)) {
-        http_response_code(400);
-        echo "Request is not valid, check that you have following : apikey,zone,ddns";
+        invalidRequestMissingParameters("apikey,zone ,and optional: ddns");
     }
 
     $result = addSoa($apikey, $zone, $optimiseForDdns);
@@ -27,12 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result != "OK") {
         if ($result == "INVUSER") {
             invalidUser();
-        }
-        else if ($result == "EXISTINGSOA"){
+        } else if ($result == "EXISTINGSOA") {
             existingZone();
-        }
-        else {
-            http_response_code(400);
+        } else {
+            #For error messages that database might throw in future
+            #that are currently not implemented
         }
     }
     echo $result;

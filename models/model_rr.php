@@ -9,6 +9,10 @@ function addRr($apikey,$zone,$record,$type,$data) {
     $_record = $conn->real_escape_string($record);
     $_type = $conn->real_escape_string($type);
     $_data = $conn->real_escape_string($data);
+    if(strlen($apikey) > 64) {
+        return ["INVUSER"];
+        closeDatabase($conn);
+    }
     $sql = "CALL addRr('$_apikey','$_zone','$_record','$_type','$_data')";
     $result = $conn->query($sql);
     closeDatabase($conn);
@@ -25,6 +29,10 @@ function updateRr($apikey, $record, $newData)
     $_apikey = $conn->real_escape_string($apikey);
     $_record = $conn->real_escape_string($record);
     $_newData = $conn->real_escape_string($newData);
+    if(strlen($apikey) > 64) {
+        return ["INVUSER"];
+        closeDatabase($conn);
+    }
     $sql = "CALL updateRr('$_apikey','$_record','$_newData')";
     $result = $conn->query($sql);
     closeDatabase($conn);
