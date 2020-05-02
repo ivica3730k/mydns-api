@@ -15,9 +15,11 @@ RUN mkdir apiserver
 RUN mkdir apiserver/models
 RUN mkdir apiserver/views
 RUN mkdir apiserver/credidentials
+RUN mkdir apiserver/helpers
 COPY models apiserver/models
 COPY views apiserver/views
-COPY credidentials/credidentials.php apiserver/credidentials
+COPY credidentials apiserver/credidentials
+COPY helpers apiserver/helpers
 COPY index.php apiserver
 COPY default /etc/nginx/sites-available
 
