@@ -14,8 +14,10 @@ RUN apt-get install -y php7.3-mysqli
 RUN mkdir apiserver
 RUN mkdir apiserver/models
 RUN mkdir apiserver/views
+RUN mkdir apiserver/credidentials
 COPY models apiserver/models
 COPY views apiserver/views
+COPY credidentials apiserver/credidentials
 COPY index.php apiserver
 COPY default /etc/nginx/sites-available
 
